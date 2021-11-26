@@ -7,14 +7,15 @@ const pool = new Pool({
   database: 'bootcampx'
 });
 
+const values = [process.argv[2] || 'JUL02'];
 const qstring = `SELECT DISTINCT(teachers.name) AS teacher, cohorts.name 
 FROM teachers
 JOIN assistance_requests ON teachers.id = assistance_requests.teacher_id
 JOIN students ON students.id = assistance_requests.student_id
 JOIN cohorts ON students.cohort_id = cohorts.id
-WHERE cohorts.name = '${process.argv[2] || 'JUL02'}'
+WHERE cohorts.name = $1
 ORDER BY teacher;`;
-pool.query(qstring)
+pool.query(qstring, values)
 .then(res => {
   console.log(res.rows);
 })
